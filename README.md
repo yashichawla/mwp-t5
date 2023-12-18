@@ -264,7 +264,7 @@ of MWP-T5 and other models on the MAWPS and PEN datasets. For more information, 
 Please feel free to contact us by emailing us to report any issues or suggestions, or if you have any further
 questions.
 
-Contact: - [Yashi Chawla](mailto:aditeya.baral@gmail.com)
+Contact: - [Yashi Chawla](mailto:yashi.chawla1@gmail.com)
 
 You can also contact the other maintainers listed below.
 
