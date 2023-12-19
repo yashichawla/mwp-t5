@@ -33,6 +33,6 @@ trainer.train(
     save_every=1,
     save_latest=True,
     hub_model_name="test-mwp-t5",
-    auth_token="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",
-    hub_organization="aditeyabaral"
+    auth_token="",
+    hub_organization="",
 )

@@ -19,7 +19,9 @@ dataset.load("data/processed/MAWPS.csv")
 
 language_model = T5LanguageModel("google/flan-t5-base", device)
 context_selector = KeyBERTContextSelector(device=device)
-solvability_checker = SolvabilityChecker("invokerliang/MWP-BERT-en", language_model, device)
+solvability_checker = SolvabilityChecker(
+    "invokerliang/MWP-BERT-en", language_model, device
+)
 solvability_checker.freeze()
 model = MWP(language_model, context_selector, solvability_checker, device)
 
@@ -43,6 +45,6 @@ trainer.train(
     save_every=1,
     save_latest=True,
     hub_model_name="test-mwp-t5",
-    auth_token="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",
-    hub_organization="aditeyabaral"
+    auth_token="",
+    hub_organization="",
 )
