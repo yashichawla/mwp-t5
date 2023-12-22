@@ -13,9 +13,9 @@ class SolvabilityCheckerTrainer(BaseTrainer):
     @staticmethod
     def compute_loss(outputs, **kwargs):
         solvability_checker_loss = (
-                kwargs.get("gamma", 0.5) * outputs.__dict__.get("loss_nc", 0) +
-                kwargs.get("eta", 2) * outputs.__dict__.get("loss_op", 0) +
-                kwargs.get("zeta", 0.5) * outputs.__dict__.get("loss_eqc", 0)
+                kwargs.get("zeta", 0.5) * outputs.__dict__.get("loss_ec", 0) +
+                kwargs.get("gamma", 0.5) * outputs.__dict__.get("loss_oc", 0) +
+                kwargs.get("eta", 2) * outputs.__dict__.get("loss_op", 0)
         )
         return solvability_checker_loss
 
