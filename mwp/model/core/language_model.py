@@ -49,9 +49,8 @@ class LanguageModel(nn.Module):
 
         Returns: None
         """
-        self.model.push_to_hub(repo_name, commit_message=f"Model: {model_commit_message}", use_auth_token=auth_token)
-        self.tokenizer.push_to_hub(repo_name, commit_message=f"Tokenizer: {tokenizer_commit_message}",
-                                   use_auth_token=auth_token)
+        self.model.push_to_hub(repo_name, commit_message=model_commit_message, use_auth_token=auth_token)
+        self.tokenizer.push_to_hub(repo_name, commit_message=tokenizer_commit_message, use_auth_token=auth_token)
 
     def generate_from_logits(self, logits):
         """

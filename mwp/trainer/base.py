@@ -140,8 +140,15 @@ class BaseTrainer:
         if not Path(path).exists() or kwargs.get("auth_token", None) is None:
             return
         path = str(Path(path).absolute().resolve())
-        command = (f"cd \"{path}\" && git lfs install && huggingface-cli lfs-enable-largefiles . && git-lfs pull && "
-                   f"git gc && git-lfs prune && git add . && git commit -m \"Model: Epoch {epoch}\" && "
+        command = (f"cd \"{path}\" && "
+                   f"git lfs install && "
+                   f"huggingface-cli lfs-enable-largefiles . && "
+                   f"git-lfs pull && "
+                   f"git pull && "
+                   f"git gc && "
+                   f"git-lfs prune && "
+                   f"git add . && "
+                   f"git commit -m \"Epoch: {epoch}\" && "
                    f"git push")
         os.system(command)
 

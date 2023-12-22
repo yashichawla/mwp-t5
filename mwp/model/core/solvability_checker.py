@@ -128,13 +128,13 @@ class SolvabilityChecker(nn.Module):
         if self.embedding_model is not None:
             self.embedding_model.push_to_hub(
                 repo_name,
-                commit_message=f"Model: {model_commit_message}",
+                commit_message=model_commit_message,
                 use_auth_token=auth_token
             )
         if self.embedding_tokenizer is not None:
             self.embedding_tokenizer.push_to_hub(
                 repo_name,
-                commit_message=f"Tokenizer: {tokenizer_commit_message}",
+                commit_message=tokenizer_commit_message,
                 use_auth_token=auth_token
             )
 
