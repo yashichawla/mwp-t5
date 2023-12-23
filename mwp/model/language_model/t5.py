@@ -117,7 +117,7 @@ class T5LanguageModel(LanguageModel):
 
         return {"input_encoding": input_encoding, "label_encoding": label_encoding}
 
-    def forward_step(self, input_encoding, label_encoding):
+    def forward_step(self, input_encoding, label_encoding, *vargs):
         outputs = self.model(
             input_ids=input_encoding["input_ids"],
             labels=label_encoding["input_ids"],

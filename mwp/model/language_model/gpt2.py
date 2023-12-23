@@ -93,7 +93,7 @@ class GPTLanguageModel(LanguageModel):
 
         return {"input_encoding": encodings, "prompt_lengths": prompt_lengths}
 
-    def forward_step(self, input_encoding, **kwargs):
+    def forward_step(self, input_encoding, *vargs):
         outputs = self.model(**input_encoding)
         return outputs
 

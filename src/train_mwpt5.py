@@ -19,8 +19,8 @@ dataset.load("data/processed/MAWPS.csv")
 # dataset.load("data/processed/PEN.csv")
 # dataset.shuffle()
 
-# language_model = T5LanguageModel("google/flan-t5-base", device)
-language_model = GPTLanguageModel("gpt2", device)
+language_model = T5LanguageModel("google/flan-t5-base", device)
+# language_model = GPTLanguageModel("gpt2", device)
 context_selector = KeyBERTContextSelector(device=device)
 solvability_checker = SolvabilityChecker(
     "invokerliang/MWP-BERT-en", language_model, device
