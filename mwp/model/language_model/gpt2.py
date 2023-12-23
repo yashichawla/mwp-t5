@@ -98,5 +98,39 @@ class GPTLanguageModel(LanguageModel):
         return outputs
 
     def generate(self, equations: list[str], context_keywords: list[list[str]] = None, generate_mode: str = "sampling"):
-        # TODO: Implement
-        pass
+        """
+        This function generates text.
+        Args:
+            equations: A list of equations.
+            context_keywords: A list of context keywords.
+            generate_mode: The mode of generation. Either "sampling" or "logits".
+
+        Returns: A list of generated sequences.
+        """
+        input_prompts = list()
+        if not context_keywords:
+            context_keywords = [[]] * len(equations)
+
+        prompt_lengths = list()
+        for equation_set, context_keywords_set in zip(equations, context_keywords):
+            # <|startoftext|> equation1 <BRG> equation2 <|keywordtext|> keyword1 keyword2 <|questiontext|>
+            input_prompt = f"{self.tokenizer.special_tokens_map['bos_token']} {equation_set} <|keywordtext|> " \
+                           f"{' '.join(context_keywords_set).strip()} <|questiontext|>"
+            input_prompts.append(input_prompt)
+            prompt_lengths.append(len(self.tokenizer.encode(input_prompt)))
+
+        input_encoding = self.tokenizer.batch_encode_plus(
+            input_prompts,
+            padding="max_length",
+            truncation=True,
+            max_length=512,
+            return_tensors="pt",
+        ).to(self.device)
+
+        if generate_mode == "logits":
+            output = self.forward_step(input_encoding)
+            generated_sequences = super(GPTLanguageModel).generate_from_logits(output.logits, prompt_lengths)
+        else:
+            generated_sequences = super(GPTLanguageModel).generate_from_sampling(input_encoding, prompt_lengths)
+
+        return generated_sequences

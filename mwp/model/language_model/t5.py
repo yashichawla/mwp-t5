@@ -134,7 +134,7 @@ class T5LanguageModel(LanguageModel):
             context_keywords: A list of context keywords.
             generate_mode: The mode of generation. Either "sampling" or "logits".
 
-        Returns: A LanguageModelOutput object.
+        Returns: A list of generated sequences.
         """
         input_prompts = list()
         if not context_keywords:
