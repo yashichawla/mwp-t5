@@ -12,7 +12,8 @@ class MWPTrainer(BaseTrainer):
 
     def write_generated_mwps_to_tensorboard(self, original_mwps, generated_mwps, step):
         for original_mwp, generated_mwp in zip(original_mwps, generated_mwps):
-            self.tensorboard_writer.add_text(original_mwp, generated_mwp, step)
+            self.tensorboard_writer.add_text(f"MWPs/{original_mwp}", generated_mwp, step)
+            self.tensorboard_writer.add_text(f"Step/{step}", generated_mwp)
 
     @staticmethod
     def freeze_components(model: MWP, freeze_components):

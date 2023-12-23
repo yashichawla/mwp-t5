@@ -40,7 +40,7 @@ class MWP(nn.Module):
 
     def push_to_hub(self, repo_name: str, model_commit_message: str, tokenizer_commit_message: str, auth_token: str):
         """
-        This function pushes the model and tokenizer for the language model and solvability checker to the HuggingFace Hub.
+        This function pushes the model and tokenizer for the language model to the HuggingFace Hub.
         Args:
             repo_name: The name of the repository.
             model_commit_message: The commit message for the model.
@@ -50,7 +50,7 @@ class MWP(nn.Module):
         Returns: None
         """
         self.language_model.push_to_hub(repo_name, model_commit_message, tokenizer_commit_message, auth_token)
-        self.solvability_checker.push_to_hub(repo_name, model_commit_message, tokenizer_commit_message, auth_token)
+        # self.solvability_checker.push_to_hub(repo_name, model_commit_message, tokenizer_commit_message, auth_token)
 
     def save(self, path: str | Path):
         """
