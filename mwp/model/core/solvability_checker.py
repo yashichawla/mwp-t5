@@ -150,6 +150,7 @@ class SolvabilityChecker(nn.Module):
         Args:
             tokens: The tokens to be embedded.
             max_length: The maximum length of the tokens.
+            average: Whether to average the embedding of the tokens.
 
         Returns: The embedding of the tokens.
         """
@@ -175,7 +176,13 @@ class SolvabilityChecker(nn.Module):
                 max_length=max_length
             ).to(self.device)
             encoder = getattr(self.language_model.model, "encoder", self.language_model.model)
-            embedding = encoder(**encoding).last_hidden_state
+            encoder_output = encoder(**encoding, output_hidden_states=True)
+            if hasattr(encoder_output, "last_hidden_state"):
+                # For Seq2Seq models
+                embedding = encoder_output.last_hidden_state
+            else:
+                # For CausalLM models
+                embedding = encoder_output.hidden_states[-1]
             if self.embedding_model is not None:
                 embedding = self.embedding_model(
                     inputs_embeds=embedding

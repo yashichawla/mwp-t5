@@ -101,6 +101,8 @@ class MWPTrainer(BaseTrainer):
                     num_operands_batch,
                     operator_labels_batch
                 ) = dataset.get_batch(batch_idx, batch_size)
+                sample = generate_every if isinstance(generate_every, bool) \
+                    else (batch_idx % (generate_every * batch_size) == 0)
 
                 outputs = model(
                     mwps=mwp_batch,
@@ -108,8 +110,7 @@ class MWPTrainer(BaseTrainer):
                     num_equations=num_equations_batch,
                     num_operands=num_operands_batch,
                     operator_labels=operator_labels_batch,
-                    sample=generate_every if isinstance(generate_every, bool) else (
-                            batch_idx % (generate_every * batch_size) == 0)
+                    sample=sample
                 )
                 if hasattr(outputs, "loss_c") and \
                         outputs.loss_c is not None and \
@@ -118,7 +119,7 @@ class MWPTrainer(BaseTrainer):
 
                 if self.tensorboard_writer is not None:
                     self.write_losses_to_tensorboard(outputs.__dict__, steps)
-                    if hasattr(outputs, "generated"):
+                    if sample and hasattr(outputs, "generated"):
                         self.write_generated_mwps_to_tensorboard(mwp_batch, outputs.generated, steps)
 
                 loss = self.compute_loss(outputs, **kwargs)
