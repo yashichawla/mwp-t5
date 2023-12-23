@@ -27,7 +27,10 @@ class T5LanguageModel(LanguageModel):
         additional_special_tokens = [
             "<keywordtext>",
             "<questiontext>",
-            "<BRG>",
+            "<BRG>"
+        ]
+
+        number_tokens = [
             "N_00",
             "N_01",
             "N_02",
@@ -62,6 +65,7 @@ class T5LanguageModel(LanguageModel):
                 extra_ids=0,
             )
 
+        self.tokenizer.add_tokens(number_tokens)
         self.model.resize_token_embeddings(len(self.tokenizer))
 
     @staticmethod
@@ -147,7 +151,11 @@ class T5LanguageModel(LanguageModel):
         ).to(self.device)
 
         if generate_mode == "logits":
-            generated_sequences = super(T5LanguageModel).generate_from_logits(input_encoding)
+            output = self.model(
+                input_ids=input_encoding["input_ids"],
+                attention_mask=input_encoding["attention_mask"],
+            )
+            generated_sequences = super(T5LanguageModel).generate_from_logits(output.logits)
         else:
             generated_sequences = super(T5LanguageModel).generate_by_sampling(input_encoding)
 
