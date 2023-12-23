@@ -131,6 +131,6 @@ class GPTLanguageModel(LanguageModel):
             output = self.forward_step(input_encoding)
             generated_sequences = super(GPTLanguageModel).generate_from_logits(output.logits, prompt_lengths)
         else:
-            generated_sequences = super(GPTLanguageModel).generate_from_sampling(input_encoding, prompt_lengths)
+            generated_sequences = super(GPTLanguageModel).generate_by_sampling(input_encoding, prompt_lengths)
 
         return generated_sequences
