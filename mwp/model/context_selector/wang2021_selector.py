@@ -16,8 +16,8 @@ from mwp.model.core.context_selector import ContextSelector
 class WangContextSelector(ContextSelector):
     """
     This class implements the Context Selector proposed in
-    "Math Word Problem Generation with Mathematical Consistency and Problem Context Constraints"
-    by Wang et al. (2021)
+    "Math Word Problem Generation with Mathematical Consistency and Problem Context Constraints" by Wang et al. (2021)
+    https://aclanthology.org/2021.emnlp-main.484/
     """
 
     def __init__(

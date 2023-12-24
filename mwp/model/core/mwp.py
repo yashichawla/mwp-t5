@@ -1,13 +1,14 @@
 from pathlib import Path
-from typing import Optional, Type
+from typing import Optional
 
 import torch
 import torch.nn as nn
 from torch import Tensor
 
 from .context_selector import ContextSelector, ContextSelectorOutput
-from .language_model import LanguageModel, LanguageModelOutput
+from .language_model import LanguageModelOutput
 from .solvability_checker import SolvabilityChecker, SolvabilityCheckerOutput
+from ..language_model import CausalLanguageModel, Seq2SeqLanguageModel
 
 
 class MWPOutput:
@@ -27,7 +28,7 @@ class MWP(nn.Module):
 
     def __init__(
             self,
-            language_model: Type[LanguageModel],
+            language_model: CausalLanguageModel | Seq2SeqLanguageModel,
             context_selector: Optional[ContextSelector] = None,
             solvability_checker: Optional[SolvabilityChecker] = None,
             device: str = "cuda"

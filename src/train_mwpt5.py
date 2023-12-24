@@ -1,14 +1,12 @@
 import sys
 
-from mwp.model.language_model.gpt2 import GPTLanguageModel
-
 sys.path.insert(0, "./")
 
 import torch
 from mwp.dataset import MWPDataset
 from mwp.model.context_selector import KeyBERTContextSelector
 from mwp.model.core.solvability_checker import SolvabilityChecker
-from mwp.model.language_model import T5LanguageModel
+from mwp.model.language_model import Seq2SeqLanguageModel
 from mwp.model.core.mwp import MWP
 from mwp.trainer import MWPTrainer
 
@@ -19,12 +17,10 @@ dataset.load("data/processed/MAWPS.csv")
 # dataset.load("data/processed/PEN.csv")
 # dataset.shuffle()
 
-language_model = T5LanguageModel("google/flan-t5-base", device)
-# language_model = GPTLanguageModel("gpt2", device)
+language_model = Seq2SeqLanguageModel("google/flan-t5-base", device)
+# language_model = CausalLanguageModel("gpt2", device)
 context_selector = KeyBERTContextSelector(device=device)
-solvability_checker = SolvabilityChecker(
-    "invokerliang/MWP-BERT-en", language_model, device
-)
+solvability_checker = SolvabilityChecker("invokerliang/MWP-BERT-en", language_model, device)
 solvability_checker.freeze()
 model = MWP(language_model, context_selector, solvability_checker, device)
 
