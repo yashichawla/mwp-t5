@@ -70,7 +70,12 @@ class LanguageModel(nn.Module):
             if prompt_lengths is not None:
                 # Remove the prompt from the generated sequence
                 indices = indices[prompt_lengths[i]:]
-            generated_sequence = self.tokenizer.decode(indices, skip_special_tokens=True)
+            if self.model.config.is_encoder_decoder:
+                # A Seq2Seq model will have a </s> token at the end of the sequence followed by trailing tokens
+                generated_sequence = self.tokenizer.decode(indices, skip_special_tokens=False)
+                generated_sequence = generated_sequence.split("</s>")[0].strip()
+            else:
+                generated_sequence = self.tokenizer.decode(indices, skip_special_tokens=True)
             generated_sequences.append(generated_sequence)
         return generated_sequences
 
@@ -92,8 +97,8 @@ class LanguageModel(nn.Module):
             current_attention_mask = attention_mask[i]
             if prompt_lengths is not None:
                 # Remove the mwp from the input_ids and attention_mask
-                current_input_ids = current_input_ids[: prompt_lengths]
-                current_attention_mask = current_attention_mask[: prompt_lengths]
+                current_input_ids = current_input_ids[: prompt_lengths[i]]
+                current_attention_mask = current_attention_mask[: prompt_lengths[i]]
 
             current_input_ids = current_input_ids.unsqueeze(0)
             current_attention_mask = current_attention_mask.unsqueeze(0)

@@ -114,14 +114,14 @@ class MWP(nn.Module):
         outputs.logits = language_model_output.logits
 
         if sample or self.solvability_checker is not None:
-            # outputs.generated = self.language_model.generate_from_logits(
-            #     outputs.logits,
-            #     prompt_lengths=language_model_output.__dict__.get("prompt_lengths", None)
-            # )
-            outputs.generated = self.language_model.generate_by_sampling(
-                language_model_output.input_encoding,
+            outputs.generated = self.language_model.generate_from_logits(
+                outputs.logits,
                 prompt_lengths=language_model_output.__dict__.get("prompt_lengths", None)
             )
+            # outputs.generated = self.language_model.generate_by_sampling(
+            #     language_model_output.input_encoding,
+            #     prompt_lengths=language_model_output.__dict__.get("prompt_lengths", None)
+            # )
 
         if self.solvability_checker is not None:
             solvability_checker_output: SolvabilityCheckerOutput = self.solvability_checker(

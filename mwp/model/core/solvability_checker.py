@@ -175,14 +175,9 @@ class SolvabilityChecker(nn.Module):
                 truncation=True,
                 max_length=max_length
             ).to(self.device)
-            encoder = getattr(self.language_model.model, "encoder", self.language_model.model)
-            encoder_output = encoder(**encoding, output_hidden_states=True)
-            if hasattr(encoder_output, "last_hidden_state"):
-                # For Seq2Seq models
-                embedding = encoder_output.last_hidden_state
-            else:
-                # For CausalLM models
-                embedding = encoder_output.hidden_states[-1]
+            # If it is a Seq2Seq model, use the encoder. Else extract the base model from the LM Head.
+            encoder = getattr(self.language_model.model, "encoder", self.language_model.model.base_model)
+            embedding = encoder(**encoding).last_hidden_state
             if self.embedding_model is not None:
                 embedding = self.embedding_model(
                     inputs_embeds=embedding
