@@ -1,12 +1,12 @@
 from pathlib import Path
-from typing import Optional, Type
+from typing import Optional
 
 import torch
 import torch.nn.functional as F
 from torch import nn as nn, Tensor
 from transformers import AutoModel, AutoTokenizer
 
-from mwp.model.core import LanguageModel
+from mwp.model.language_model import CausalLanguageModel, Seq2SeqLanguageModel
 
 
 class SolvabilityCheckerOutput:
@@ -27,7 +27,7 @@ class SolvabilityChecker(nn.Module):
     def __init__(
             self,
             embedding_model_path: Optional[str] = "invokerliang/MWP-BERT-en",
-            language_model: Optional[Type[LanguageModel]] = None,
+            language_model: Optional[CausalLanguageModel | Seq2SeqLanguageModel] = None,
             device: str = "cuda"
     ):
         super(SolvabilityChecker, self).__init__()
@@ -143,7 +143,7 @@ class SolvabilityChecker(nn.Module):
             tokens: list[str],
             max_length: int = 256,
             average: bool = True
-    ):
+    ) -> Tensor:
         """
         Obtain the embedding of the tokens using the defined embedding model.
 

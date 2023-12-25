@@ -59,7 +59,7 @@ class MWPDataset(Dataset):
         vocabulary = [word for word, count in vocabulary.items() if count >= min_count]
         return vocabulary
 
-    def get_batch(self, index, batch_size) -> tuple[
+    def get_batch(self, index: int, batch_size: int) -> tuple[
         list[str], list[str], list[list[float]], list[int], list[int], list[Tensor]]:
         """
         This function returns a batch of the dataset.
@@ -102,7 +102,7 @@ class MWPDataset(Dataset):
             labels.append(torch.tensor(current_label))
         return labels
 
-    def load(self, path):
+    def load(self, path: str):
         """
         This function loads the dataset from the given path.
         Args:
@@ -145,13 +145,14 @@ class MWPDataset(Dataset):
         self.operator_labels = list()
         self.vocabulary = list()
 
-    def shuffle(self):
+    def shuffle(self, seed: int = 42):
         """
         This function shuffles the dataset.
 
         """
         zipped = list(
             zip(self.mwps, self.equations, self.operands, self.num_equations, self.num_operands, self.operator_labels))
+        random.seed(seed)
         random.shuffle(zipped)
         self.mwps, self.equations, self.operands, self.num_equations, self.num_operands, self.operator_labels = zip(
             *zipped)

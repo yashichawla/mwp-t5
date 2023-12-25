@@ -1,2 +1,2 @@
-# from .gpt import GPTLanguageModel
-from .t5 import T5LanguageModel
+from .causal import CausalLanguageModel
+from .seq2seq import Seq2SeqLanguageModel

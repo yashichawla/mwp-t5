@@ -1,22 +1,17 @@
 from typing import Optional
 
-from transformers import (
-    T5ForConditionalGeneration,
-    T5Tokenizer,
-    LongT5ForConditionalGeneration,
-    AutoTokenizer, AutoModelForSeq2SeqLM
-)
+from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 
 from mwp.model.core.language_model import LanguageModel
 
 
-class T5LanguageModel(LanguageModel):
+class Seq2SeqLanguageModel(LanguageModel):
     """
-    Implementation of T5 language model
+    Implementation of encoder-decoder based Seq2Seq language models - T5, LongT5, etc.
     """
 
     def __init__(self, model_path: str, device: str = "cuda"):
-        super(T5LanguageModel, self).__init__()
+        super(Seq2SeqLanguageModel, self).__init__()
         self.model_path = model_path
         self.device = device
         self.model = None
@@ -43,27 +38,12 @@ class T5LanguageModel(LanguageModel):
             "N_09",
         ]
 
-        if self.model_path.startswith("t5"):
-            self.model = T5ForConditionalGeneration.from_pretrained(self.model_path).to(self.device)
-            self.tokenizer = T5Tokenizer.from_pretrained(
-                self.model_path,
-                additional_special_tokens=additional_special_tokens,
-                extra_ids=0,
-            )
-        elif self.model_path.startswith("long-t5"):
-            self.model = LongT5ForConditionalGeneration.from_pretrained(self.model_path).to(self.device)
-            self.tokenizer = AutoTokenizer.from_pretrained(
-                self.model_path,
-                additional_special_tokens=additional_special_tokens,
-                extra_ids=0,
-            )
-        else:
-            self.model = AutoModelForSeq2SeqLM.from_pretrained(self.model_path).to(self.device)
-            self.tokenizer = AutoTokenizer.from_pretrained(
-                self.model_path,
-                additional_special_tokens=additional_special_tokens,
-                extra_ids=0,
-            )
+        self.model = AutoModelForSeq2SeqLM.from_pretrained(self.model_path).to(self.device)
+        self.tokenizer = AutoTokenizer.from_pretrained(
+            self.model_path,
+            additional_special_tokens=additional_special_tokens,
+            extra_ids=0,
+        )
 
         self.tokenizer.add_tokens(number_tokens)
         self.model.resize_token_embeddings(len(self.tokenizer))
@@ -155,8 +135,8 @@ class T5LanguageModel(LanguageModel):
                 input_ids=input_encoding["input_ids"],
                 attention_mask=input_encoding["attention_mask"],
             )
-            generated_sequences = super(T5LanguageModel).generate_from_logits(output.logits)
+            generated_sequences = super(Seq2SeqLanguageModel).generate_from_logits(output.logits)
         else:
-            generated_sequences = super(T5LanguageModel).generate_by_sampling(input_encoding)
+            generated_sequences = super(Seq2SeqLanguageModel).generate_by_sampling(input_encoding)
 
         return generated_sequences

@@ -7,7 +7,7 @@ sys.path.insert(0, "./")
 import torch
 from mwp.dataset import MWPDataset
 from mwp.model.context_selector import KeyBERTContextSelector
-from mwp.model.language_model import T5LanguageModel
+from mwp.model.language_model import Seq2SeqLanguageModel
 from mwp.model.core.mwp import MWP
 from mwp.evaluator import LanguageModelEvaluator, SolvabilityEvaluator, DatasetOverlapEvaluator
 
@@ -18,7 +18,7 @@ dataset.load("data/processed/MAWPS.csv")
 # dataset.load("data/processed/PEN.csv")
 # dataset.shuffle()
 
-language_model = T5LanguageModel("google/flan-t5-base", device)
+language_model = Seq2SeqLanguageModel("google/flan-t5-base", device)
 context_selector = KeyBERTContextSelector(device=device)
 solvability_checker = SolvabilityChecker("invokerliang/MWP-BERT-en", language_model, device)
 solvability_checker.freeze()

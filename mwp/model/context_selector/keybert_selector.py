@@ -5,20 +5,20 @@ from sentence_transformers import SentenceTransformer
 
 from mwp.model.core.context_selector import ContextSelector
 
-random.seed(42)
-
 
 class KeyBERTContextSelector(ContextSelector):
     """
     This class implements the KeyBERT context selector.
     """
 
-    def __init__(self, model_path: str = "all-MiniLM-L6-v2", device: str = "cuda"):
+    def __init__(self, model_path: str = "all-MiniLM-L6-v2", device: str = "cuda", seed: int = 42):
         super(KeyBERTContextSelector, self).__init__()
         self.model_path = model_path
         self.device = device
         self.model = SentenceTransformer(self.model_path).to(self.device)
         self.keybert = KeyBERT(model=self.model)
+        self.seed = seed
+        random.seed(self.seed)
 
     def get_keywords(self, mwps: list[str], ngram_range: tuple[int, int] = (1, 2), top_n: int = 6) -> \
             tuple[None, None] | tuple[list[str] | None, None]:

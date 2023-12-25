@@ -81,8 +81,10 @@ class SolvabilityCheckerTrainer(BaseTrainer):
 
             avg_epoch_loss = total_epoch_loss / num_batches
             self.scheduler.step(avg_epoch_loss)
-            print(f"Epoch {epoch}, Training Loss: {avg_epoch_loss}")
-            print(f"Epoch {epoch} completed. Current learning rate: {self.optimizer.param_groups[0]['lr']}")
+
+            print(f"Epoch {epoch} completed.\n"
+                  f"Training Loss: {avg_epoch_loss}\n"
+                  f"Current learning rate: {self.optimizer.param_groups[0]['lr']}")
 
             self.push_training_state_to_hub(model, epoch, **kwargs)
             if epoch % kwargs.get("save_every", 1) == 0:

@@ -1,20 +1,17 @@
 from typing import Optional
 
-from transformers import (
-    AutoModelForCausalLM,
-    AutoTokenizer,
-)
+from transformers import AutoModelForCausalLM, AutoTokenizer
 
 from mwp.model.core.language_model import LanguageModel
 
 
-class GPTLanguageModel(LanguageModel):
+class CausalLanguageModel(LanguageModel):
     """
-    Implementation of GPT language models
+    Implementation of decoder-based Causal language models - GPT-2, GPT-Neo, GPT-J, etc.
     """
 
     def __init__(self, model_path: str, device: str = "cuda"):
-        super(GPTLanguageModel, self).__init__()
+        super(CausalLanguageModel, self).__init__()
         self.model_path = model_path
         self.device = device
         self.model = None
@@ -129,8 +126,8 @@ class GPTLanguageModel(LanguageModel):
 
         if generate_mode == "logits":
             output = self.forward_step(input_encoding)
-            generated_sequences = super(GPTLanguageModel).generate_from_logits(output.logits, prompt_lengths)
+            generated_sequences = super(CausalLanguageModel).generate_from_logits(output.logits, prompt_lengths)
         else:
-            generated_sequences = super(GPTLanguageModel).generate_by_sampling(input_encoding, prompt_lengths)
+            generated_sequences = super(CausalLanguageModel).generate_by_sampling(input_encoding, prompt_lengths)
 
         return generated_sequences

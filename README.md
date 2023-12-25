@@ -104,9 +104,9 @@ trainer.train(
     upload_model_to_hub=True,  # Whether to upload the entire model to the HuggingFaceHub
     save_every=1,  # The number of epochs to save the model
     save_latest=False,  # Whether to only save the latest model at the end of each epoch
-    hub_model_name="new-solvability-checker",  # The name of the model on the HuggingFaceHub
+    hub_model_name="solvability-checker",  # The name of the model on the HuggingFaceHub
     auth_token="",  # The HuggingFaceHub auth token
-    hub_organization="MWP-T5"  # The HuggingFaceHub organization
+    hub_organization=""  # The HuggingFaceHub organization or username
 )
 ```
 
@@ -136,29 +136,42 @@ context_selector = KeyBERTContextSelector(device="cuda")
 ### Initialise the Language Model
 
 We need to initialise a new language model that takes in the context keywords and equation and generates a relevant MWP.
-All the implemented language models have been provided in `mwp.model.language_model/`.
+This repository supports both seq2seq and causal language models, although our proposed model is a T5 since it proves to
+be more effective at encoding information required to generate MWPs. You can view all the implemented language models in
+`mwp.model.language_model/`.
 
 If you would like to implement your own language model, you will need to create a new class that inherits from the
 base `mwp.model.core.LanguageModel` class. You will also need to implement various methods which are used to encode the
-input and decode the output. You can use an existing language model implementation as a reference.
+input and output. You can use an existing language model implementation as a reference.
 
 ```python
-from mwp.model.language_model import T5LanguageModel
+from mwp.model.language_model import Seq2SeqLanguageModel
 
-language_model = T5LanguageModel("google/flan-t5-base", device="cuda")
+language_model = Seq2SeqLanguageModel("google/flan-t5-base", device="cuda")
 ``` 
+
+### Loading the fine-tuned Solvability Checker
+
+We can now load the fine-tuned solvability checker. You can load the model from the HuggingFaceHub or from a local
+directory. Remember to call the `freeze()` method to freeze the parameters of the solvability checker so that they are
+not updated during training.
+
+```python
+from mwp.model.core.solvability_checker import SolvabilityChecker
+
+solvability_checker = SolvabilityChecker("mwpt5/solvability-checker", device="cuda")
+solvability_checker.freeze()
+```
 
 ### Putting the model components together
 
 We now need to tie all the initialised model components together - the context selector, solvability checker and the
 language model. We can do this by creating an object of the `mwp.model.core.mwp.MWP` class and passing the required
 components as arguments. Note that only the language model is required. The context selector and solvability checker
-are optional. Remember to freeze the parameters of the solvability checker so that they are not updated during training.
+are recommended but optional.
 
 ```python
 from mwp.model.core.mwp import MWP
-
-solvability_checker.freeze()
 
 model = MWP(
     language_model=language_model,
@@ -206,7 +219,7 @@ trainer.train(
     save_latest=True,  # Whether to only save the latest model at the end of each epoch
     hub_model_name="mwp-t5",  # The name of the model on the HuggingFaceHub
     auth_token="",  # The HuggingFaceHub auth token
-    hub_organization="MWP-T5"  # The HuggingFaceHub organization
+    hub_organization=""  # The HuggingFaceHub organization or username
 )
 ```
 
@@ -214,12 +227,13 @@ You can also view the `src/train_mwpt5.py` file for a complete example.
 
 # Evaluation
 
-You can evaluate the trained model using the `evaluate()` method of any `mwp.evaluator` evaluator as follows.
+Once you have generated some MWPs, you can evaluate the trained model using the `evaluate()` method of
+any `mwp.evaluator` class as follows.
 
 ```python
 from mwp.evaluator import DatasetOverlapEvaluator, LanguageModelEvaluator, SolvabilityEvaluator
 
-dataset_overlap_evaluator = DatasetOverlapEvaluator()
+dataset_overlap_evaluator = DatasetOverlapEvaluator(solvability_checker)
 dataset_overlap_metrics = dataset_overlap_evaluator.evaluate(generated_mwps, original_mwps)
 
 language_model_evaluator = LanguageModelEvaluator()
