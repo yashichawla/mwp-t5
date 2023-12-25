@@ -45,7 +45,8 @@ class CausalLanguageModel(LanguageModel):
             quantization_config=kwargs.get("quantization_config", None),
             torch_dtype=kwargs.get("torch_dtype", None),
             trust_remote_code=kwargs.get("trust_remote_code", None),
-        ).to(self.device)
+            device_map=kwargs.get("device_map", "auto"),
+        )
 
         self.tokenizer = AutoTokenizer.from_pretrained(
             self.model_path,
