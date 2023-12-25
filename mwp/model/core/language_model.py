@@ -169,7 +169,7 @@ class LanguageModel(nn.Module):
         """
         raise NotImplementedError
 
-    def initialize_model_and_tokenizer(self):
+    def initialize_model_and_tokenizer(self, **kwargs):
         """
         This function initializes the model and tokenizer. This needs to be implemented by the child class.
         Returns: None
